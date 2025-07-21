@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect
 from .models import Admission
 from django.contrib import messages
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import AdmissionForm  # You'll need to create this form
+
 def home(request):
     return render(request, 'main/home.html')
 
@@ -85,3 +89,21 @@ def receptionist_dashboard(request):
 def receptionist_logout(request):
     logout(request)
     return redirect("receptionist_login")
+
+def edit_admission(request, admission_id):
+    admission = get_object_or_404(Admission, id=admission_id)
+    if request.method == 'POST':
+        form = AdmissionForm(request.POST, instance=admission)
+        if form.is_valid():
+            form.save()
+            return redirect('receptionist_dashboard')  # Update this to your dashboard view name
+    else:
+        form = AdmissionForm(instance=admission)
+    # return render(request, 'edit_admission.html', {'form': form})
+    return render(request, 'main/edit_admission.html', {'form': form})
+
+
+def delete_admission(request, admission_id):
+    admission = get_object_or_404(Admission, id=admission_id)
+    admission.delete()
+    return redirect('receptionist_dashboard')  # Update this to your dashboard view name

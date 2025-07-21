@@ -14,6 +14,9 @@ urlpatterns =[
     path('receptionist/dashboard/', views.receptionist_dashboard, name='receptionist_dashboard'),
     path('receptionist/logout/', views.receptionist_logout, name='receptionist_logout'),
 
+    path('receptionist/dashboard/<int:admission_id>/', views.edit_admission, name='edit_admission'),
+    path('receptionist/delete/<int:admission_id>/', views.delete_admission, name='delete_admission'),
+
 ]
    
 
