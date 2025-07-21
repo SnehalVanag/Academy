@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import AdmissionForm  # You'll need to create this form
 
+
+
 def home(request):
     return render(request, 'main/home.html')
 
@@ -68,20 +70,26 @@ def receptionist_login(request):
 
 
 
-@login_required
-def receptionist_dashboard(request):
-    # Fetch all admissions sorted by course, then name
-    admissions = Admission.objects.all().order_by('name', 'submitted_at' )
+from collections import defaultdict, OrderedDict
+from django.shortcuts import render
+from .models import Admission
 
-    # Group data by submission date
+def receptionist_dashboard(request):
+    # Fetch all admissions ordered by name and submitted date
+    admissions = Admission.objects.all().order_by('name', 'submitted_at')
+
+    # Group admissions by date
     grouped_data = defaultdict(list)
     for admission in admissions:
-        date_key = admission.submitted_at.date()  # Grouping key: date only
+        date_key = admission.submitted_at.date()
         grouped_data[date_key].append(admission)
 
-    # Convert defaultdict to regular dict
+    # Sort the grouped data by date (descending)
+    sorted_grouped_admissions = OrderedDict(sorted(grouped_data.items(), reverse=True))
+
+    # Pass the sorted data to the template
     context = {
-        'grouped_admissions': dict(grouped_data)
+        'grouped_admissions': sorted_grouped_admissions
     }
     return render(request, 'main/receptionist_dashboard.html', context)
 
