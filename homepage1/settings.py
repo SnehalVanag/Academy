@@ -11,10 +11,16 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -25,8 +31,8 @@ SECRET_KEY = 'django-insecure-*2fgrohyy%m_nyolg!u-==+5%!s9n72h77%8me%9vlc6x&6&e^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1'] # Add your custom domain if you have one
 
 # Application definition
 
@@ -38,11 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main',
-    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -78,17 +84,17 @@ WSGI_APPLICATION = 'homepage1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
+# DATABASES = {
     
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aadb',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'aadb',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation
@@ -133,9 +139,14 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-import os
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
+MEDIA_URLS ='/media/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'main/static'),
 ]
